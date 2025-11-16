@@ -1,39 +1,55 @@
-# Docker-Load-Balancer-Setup
-🚀 Docker Load Balancer Setup (Nginx + Docker Compose)  A simple and clean setup for running multiple Nginx instances using Docker, and load balancing them with Nginx on the host server.
+# Docker Load Balancer Setup with Nginx + Docker Compose
 
-📦 Project Structure
+A simple, clean, and production-ready setup to run **multiple Nginx instances** inside Docker containers and load balance them using **Nginx on the host server** with round-robin strategy.
+
+---
+
+## 📦 Project Structure
+
+```
+.
 ├── docker-compose.yml
 ├── nginx/
 │   └── loadbalancer.conf
 └── README.md
+```
 
-🧰 Requirements
+---
 
-🐧 Linux Server (Ubuntu/Debian recommended)
+## 🧰 Requirements
 
-🐳 Docker & Docker Compose
+- 🐧 Linux Server (Ubuntu/Debian recommended)
+- 🐳 Docker & Docker Compose
+- 🌐 Nginx
 
-🌐 Nginx
+---
 
-🔧 1. Update System
+## 🚀 Setup Instructions
 
+### 1. Update System
+```bash
 sudo apt update && sudo apt upgrade -y
+```
 
-🐳 2. Install Docker, Docker Compose & Nginx
-
+### 2. Install Docker, Docker Compose & Nginx
+```bash
 sudo apt install docker.io docker-compose nginx -y
+```
 
-⚙️ 3. Start and Enable Docker
-
+### 3. Start and Enable Docker
+```bash
 sudo systemctl start docker
 sudo systemctl enable docker
+```
 
-📁 4. Create Load Balancer Directory
-
+### 4. Create Project Directory
+```bash
 mkdir ~/loadbalancer && cd ~/loadbalancer
+```
 
-📝 5. Create docker-compose.yml
+### 5. Create `docker-compose.yml`
 
+```yaml
 version: '3.8'
 
 services:
@@ -57,25 +73,34 @@ services:
       - "8083:80"
     container_name: web3
     restart: always
+```
 
-▶️ 6. Run the Containers
-
+### 6. Run the Containers
+```bash
 docker-compose up -d
+```
 
-🧪 7. Test Container Outputs
-
+### 7. Test Individual Containers
+```bash
 curl http://localhost:8081
 curl http://localhost:8082
 curl http://localhost:8083
+```
 
-🗑️ 8. Remove Default Nginx Site
+> You should see the default Nginx welcome page from each instance.
 
+---
+
+### 8. Remove Default Nginx Site
+```bash
 sudo rm /etc/nginx/sites-enabled/default
+```
 
-⚖️ 9. Create Nginx Load Balancer Config
+### 9. Create Load Balancer Config
 
-File path: nginx/loadbalancer.conf
+**File:** `nginx/loadbalancer.conf`
 
+```nginx
 upstream backend {
     server 127.0.0.1:8081;
     server 127.0.0.1:8082;
@@ -99,39 +124,84 @@ server {
         return 200 "healthy\n";
     }
 }
+```
 
-
-Copy it into system directory:
-
+**Copy to system:**
+```bash
 sudo cp nginx/loadbalancer.conf /etc/nginx/conf.d/
+```
 
-🧪 10. Test Nginx Configuration
-
+### 10. Test Nginx Configuration
+```bash
 sudo nginx -t
+```
 
-🔄 11. Restart and Enable Nginx
-
+### 11. Restart & Enable Nginx
+```bash
 sudo systemctl restart nginx
 sudo systemctl enable nginx
+```
 
-🔥 12. Firewall Rules
-
+### 12. Configure Firewall
+```bash
 sudo ufw allow 80
 sudo ufw allow 22
 sudo ufw --force enable
+```
 
-🌍 13. Final Test
+---
 
+## 🌍 Final Test
+
+```bash
 echo "Open in browser: http://$(curl -s ifconfig.me)"
+```
 
-🎯 Result
+Or test health check:
+```bash
+curl http://$(curl -s ifconfig.me)/health
+# Output: healthy
+```
 
-You now have:
+---
 
-3 independent Nginx instances
+## 🎯 Features
 
-Automatic round-robin load balancing
+- **3 independent Nginx containers**
+- **Round-robin load balancing** via host Nginx
+- **Health check endpoint**: `/health`
+- **Production-ready** with proper headers & restart policies
+- **Clean separation** of concerns
 
-Clean and production-ready architecture
+---
 
-Health check endpoint: /health
+## 🛠️ Optional Enhancements
+
+- Add SSL/TLS with Let's Encrypt
+- Use custom domain instead of IP
+- Scale containers dynamically: `docker-compose up -d --scale web1=3`
+- Monitor with Prometheus + Grafana
+
+---
+
+## 🔗 Useful Commands
+
+```bash
+# View logs
+docker-compose logs -f
+
+# Stop all
+docker-compose down
+
+# Rebuild & restart
+docker-compose down && docker-compose up -d --build
+```
+
+---
+
+**Enjoy your scalable, load-balanced Nginx cluster!** 🚀
+
+---
+
+*Made with ❤️ for clean DevOps setups*  
+*Feel free to ⭐ star this repo if you found it helpful!*
