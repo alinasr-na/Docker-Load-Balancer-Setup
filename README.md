@@ -16,19 +16,24 @@
 🌐 Nginx
 
 🔧 1. Update System
+
 sudo apt update && sudo apt upgrade -y
 
 🐳 2. Install Docker, Docker Compose & Nginx
+
 sudo apt install docker.io docker-compose nginx -y
 
 ⚙️ 3. Start and Enable Docker
+
 sudo systemctl start docker
 sudo systemctl enable docker
 
 📁 4. Create Load Balancer Directory
+
 mkdir ~/loadbalancer && cd ~/loadbalancer
 
 📝 5. Create docker-compose.yml
+
 version: '3.8'
 
 services:
@@ -54,14 +59,17 @@ services:
     restart: always
 
 ▶️ 6. Run the Containers
+
 docker-compose up -d
 
 🧪 7. Test Container Outputs
+
 curl http://localhost:8081
 curl http://localhost:8082
 curl http://localhost:8083
 
 🗑️ 8. Remove Default Nginx Site
+
 sudo rm /etc/nginx/sites-enabled/default
 
 ⚖️ 9. Create Nginx Load Balancer Config
@@ -98,18 +106,22 @@ Copy it into system directory:
 sudo cp nginx/loadbalancer.conf /etc/nginx/conf.d/
 
 🧪 10. Test Nginx Configuration
+
 sudo nginx -t
 
 🔄 11. Restart and Enable Nginx
+
 sudo systemctl restart nginx
 sudo systemctl enable nginx
 
 🔥 12. Firewall Rules
+
 sudo ufw allow 80
 sudo ufw allow 22
 sudo ufw --force enable
 
 🌍 13. Final Test
+
 echo "Open in browser: http://$(curl -s ifconfig.me)"
 
 🎯 Result
